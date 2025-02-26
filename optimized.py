@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 
 import csv
-import time
 import view
-
-debut = time.time()
+import constantes
 
 
 def conversion_taux(texte_taux):
@@ -15,7 +13,13 @@ def calcul_benefice(prix, taux):
     return round(prix * taux, 2)
 
 
-with open("data.csv", "r") as data_csv:
+fichier_data = view.choix_donnees()
+chemin_fichier = constantes.chemin_fichier(fichier_data)
+
+DEBUT = constantes.debut()
+
+
+with open(chemin_fichier, "r") as data_csv:
     lecteur = csv.reader(data_csv)
 
     liste_actions = []
@@ -51,16 +55,34 @@ while prix_panier_actions <= 500:
     if i == len(liste_actions_triee):
         break
 
+    if prix_panier_actions + liste_actions_triee[i]["prix"] > 500:
+        if (
+            liste_actions_triee[j]["benefice"] < liste_actions_triee[i]["benefice"]
+            and prix_panier_actions
+            + liste_actions_triee[i]["prix"]
+            - liste_actions_triee[j]["prix"]
+            <= 500
+        ):
+            prix_panier_actions -= liste_actions_triee[j]["prix"]
+            prix_panier_actions += liste_actions_triee[i]["prix"]
+            panier_action.pop()
+            panier_action.append(liste_actions_triee[i])
+            j = i
+
     if prix_panier_actions + liste_actions_triee[i]["prix"] <= 500:
-        panier_action.append(liste_actions_triee[i])
         prix_panier_actions += liste_actions_triee[i]["prix"]
+        panier_action.append(liste_actions_triee[i])
+        j = i
     i += 1
 
 
 prix_panier_actions = round(prix_panier_actions, 2)
 
-fin = time.time()
+panier_action_trie = []
+for element in liste_actions:
+    if element in panier_action:
+        panier_action_trie.append(element)
 
-view.affichage_donnees(panier_action, prix_panier_actions)
-view.affichage_temps(debut, fin)
+view.affichage_donnees(panier_action_trie, prix_panier_actions)
+view.affichage_temps(DEBUT, constantes.fin())
 view.affichage_erreurs(erreur_trouvees)

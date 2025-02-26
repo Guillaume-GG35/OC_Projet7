@@ -2,22 +2,31 @@
 
 import csv
 import itertools
-import time
 import view
-
-
-debut = time.time()
+import constantes
 
 
 def conversion_taux(texte_taux):
-    return int(texte_taux[:-1]) / 100
+    return round(float(texte_taux[:-1]) / 100, 2)
 
 
 def calcul_benefice(prix, taux):
     return round(prix * taux, 2)
 
 
-with open("data.csv", "r") as data_csv:
+fichier_data = view.choix_donnees()
+chemin_fichier = constantes.chemin_fichier(fichier_data)
+
+with open(chemin_fichier, "r") as fichier:
+    nombre_lignes = sum(1 for ligne in fichier)
+    if nombre_lignes > 21:
+        choix_utilisateur = view.avertissement()
+        if choix_utilisateur == "n":
+            exit()
+
+DEBUT = constantes.debut()
+
+with open(chemin_fichier, "r") as data_csv:
     lecteur = csv.reader(data_csv)
 
     liste_actions = []
@@ -32,7 +41,7 @@ with open("data.csv", "r") as data_csv:
         action["nom"] = ligne[0]
 
         try:
-            action["prix"] = int(ligne[1])
+            action["prix"] = float(ligne[1])
             if action["prix"] < 0:
                 erreur_trouvees += 1
                 continue
@@ -77,8 +86,8 @@ prix_panier_actions = 0
 for element in panier_action:
     prix_panier_actions += element["prix"]
 
-fin = time.time()
+prix_panier_actions = round(prix_panier_actions, 2)
 
 view.affichage_donnees(panier_action, prix_panier_actions)
-view.affichage_temps(debut, fin)
+view.affichage_temps(DEBUT, constantes.fin())
 view.affichage_erreurs(erreur_trouvees)

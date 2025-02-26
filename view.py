@@ -1,5 +1,20 @@
 #!/usr/bin/env python3
 
+import constantes
+
+
+def choix_donnees():
+    print()
+    print("Liste des fichiers de données disponibles :")
+    for fichier in constantes.FICHIERS:
+        print(fichier)
+    print()
+    selection_utilisateur = input("Selectionner le jeu de données souhaité : ")
+    while selection_utilisateur not in constantes.FICHIERS:
+        print("Fichier introuvable : Merci de vérifier votre saisie !")
+        selection_utilisateur = input("Selectionner le jeu de données souhaité : ")
+    return selection_utilisateur
+
 
 def affichage_donnees(panier_action, prix_panier_actions):
     print()
@@ -27,7 +42,13 @@ def affichage_donnees(panier_action, prix_panier_actions):
 
 
 def affichage_temps(debut, fin):
-    temps_execution = round(fin - debut, 2)
+    temps_execution = fin - debut
+
+    if temps_execution < 1:
+        temps_execution = round(temps_execution, 5)
+    else:
+        temps_execution = round(temps_execution, 2)
+
     print(f"Programme exécuté en {temps_execution}s")
 
 
@@ -39,3 +60,15 @@ def affichage_erreurs(erreur_trouvees):
         )
     else:
         return print()
+
+
+def avertissement():
+    print("ATTENTION : Le fichier sélectionné est volumineux.")
+    print(
+        "Le programme n'est pas prévu pour un jeu de données d'entrées aussi important."
+    )
+    choix_utilisateur = input("Continuer? (O/n) : ")
+    while choix_utilisateur != "O" and choix_utilisateur != "n":
+        print("Merci de taper 'O' pour Oui ou 'n' pour Non.")
+        choix_utilisateur = input("Continuer? (O/n) : ")
+    return choix_utilisateur
