@@ -1,6 +1,6 @@
 # OC-Projet4 : Développez un programme logiciel en Python.
 
-Ce programme permet la gestion de tournois d'échecs.<br>
+Ce programme permet d'analyser les différentes options d'achats d'actions afin de maximiser le profit réalisable.<br>
 <br>
 > [!NOTE]
 > Testé sous Ubuntu 24.04 - Python 3.12.3
